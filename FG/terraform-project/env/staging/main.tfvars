@@ -1,0 +1,2 @@
+location = "centralus"
+environment = "production"

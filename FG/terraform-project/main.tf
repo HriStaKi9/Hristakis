@@ -1,7 +1,35 @@
 # main.tf: This file will contain the main configuration for your Terraform project. 
 # You'll define the necessary resources, data sources, and other configurations here.
-
 # main.tf
+terraform {
+  required_version = ">= 0.12"
+}
+
+locals {
+  environment = var.environment
+}
+
+provider "azurerm" {
+  features {}
+  # Add any other provider settings here if needed
+}
+
+module "vnet" {
+  source      = "./modules/module1"
+  location    = var.location
+  environment = var.environment
+}
+
+module "subnet" {
+  source      = "./modules/module2"
+  location    = var.location
+  environment = var.environment
+}
+
+module "vnet_peering" {
+  source      = "./modules/module3"
+  environment = var.environment
+}
 
 provider "azurerm" {
   features {}
@@ -23,23 +51,3 @@ module "roles" {
   source = "./roles"
   # If you have additional input variables for the roles module, pass them here.
 }
-
-module "policy_initiative1" {
-  source = "./modules/policy_initiative"
-
-  name        = local.policySetDefinitionObjectList[0].policySetName
-  description = local.policySetDefinitionObjectList[0].description
-  policies    = local.policySetDefinitionObjectList[0].policies
-  parameters  = local.policySetDefinitionObjectList[0].parameterValues
-}
-
-module "policy_initiative2" {
-  source = "./modules/policy_initiative"
-
-  name        = local.policySetDefinitionObjectList[1].policySetName
-  description = local.policySetDefinitionObjectList[1].description
-  policies    = local.policySetDefinitionObjectList[1].policies
-  parameters  = local.policySetDefinitionObjectList[1].parameterValues
-}
-
-# Add other policy initiatives, policy assignments, and other resources as needed.
